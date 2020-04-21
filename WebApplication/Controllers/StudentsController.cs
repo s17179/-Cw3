@@ -81,7 +81,7 @@ namespace WebApplication.Controllers
         }
         
         [HttpGet]
-        public IActionResult GetStudentEnrollments(int studentId)
+        public IActionResult GetStudentEnrollments(string studentId)
         {
             ArrayList students = new ArrayList();
             
