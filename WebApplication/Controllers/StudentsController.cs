@@ -19,32 +19,32 @@ namespace WebApplication.Controllers
             _dbService = dbService;
         }
 
-        [HttpGet]
-        public IActionResult GetStudents(string orderBy)
-        {
-            ArrayList students = new ArrayList();
-            
-            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
-            using (var command = new SqlCommand())
-            {
-                command.Connection = connection;
-                command.CommandText = "SELECT * FROM Student";
-                
-                connection.Open();
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var student = new Student();
-                    student.IndexNumber = reader["IndexNumber"].ToString();
-                    student.FirstName = reader["FirstName"].ToString();
-                    student.LastName = reader["LastName"].ToString();
-                    student.birthDate = DateTime.Parse(reader["BirthDate"].ToString());
-                    students.Add(student);
-                }
-            }
-            
-            return Ok(students);
-        }
+        // [HttpGet]
+        // public IActionResult GetStudents(string orderBy)
+        // {
+        //     ArrayList students = new ArrayList();
+        //     
+        //     using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
+        //     using (var command = new SqlCommand())
+        //     {
+        //         command.Connection = connection;
+        //         command.CommandText = "SELECT * FROM Student";
+        //         
+        //         connection.Open();
+        //         var reader = command.ExecuteReader();
+        //         while (reader.Read())
+        //         {
+        //             var student = new Student();
+        //             student.IndexNumber = reader["IndexNumber"].ToString();
+        //             student.FirstName = reader["FirstName"].ToString();
+        //             student.LastName = reader["LastName"].ToString();
+        //             student.birthDate = DateTime.Parse(reader["BirthDate"].ToString());
+        //             students.Add(student);
+        //         }
+        //     }
+        //     
+        //     return Ok(students);
+        // }
         
         [HttpGet("{id}")]
         public IActionResult GetStudent(int id)
@@ -78,6 +78,45 @@ namespace WebApplication.Controllers
         public IActionResult DeleteStudent(int id)
         {
             return Ok("Usuwanie ukończone");
+        }
+        
+        [HttpGet]
+        public IActionResult GetStudentEnrollments(int studentId)
+        {
+            ArrayList students = new ArrayList();
+            
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
+            using (var command = new SqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandText = "SELECT Student.IndexNumber, Student.FirstName, Student.LastName, Student.BirthDate, Enrollment.IdEnrollment, Enrollment.Semester, Enrollment.StartDate, Studies.IdStudy, Studies.Name FROM Student JOIN Enrollment ON Student.IdEnrollment = Enrollment.IdEnrollment JOIN Studies ON Enrollment.IdStudy = Studies.IdStudy WHERE Student.IndexNumber = " + studentId;
+                
+                connection.Open();
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var study = new Study();
+                    study.IdStudy = Int32.Parse(reader["IdStudy"].ToString());
+                    study.Name = reader["Name"].ToString();
+                    
+                    var studentEnrollment = new StudentEnrollment();
+                    studentEnrollment.IdEnrollment = Int32.Parse(reader["IdEnrollment"].ToString());
+                    studentEnrollment.Semester = Int32.Parse(reader["Semester"].ToString());
+                    studentEnrollment.StartDate = DateTime.Parse(reader["StartDate"].ToString());
+                    studentEnrollment.Study = study;
+                    
+                    var student = new Student();
+                    student.IndexNumber = reader["IndexNumber"].ToString();
+                    student.FirstName = reader["FirstName"].ToString();
+                    student.LastName = reader["LastName"].ToString();
+                    student.birthDate = DateTime.Parse(reader["BirthDate"].ToString());
+                    student.StudentEnrollment = studentEnrollment;
+                    
+                    students.Add(student);
+                }
+            }
+            
+            return Ok(students);
         }
     }
 }
