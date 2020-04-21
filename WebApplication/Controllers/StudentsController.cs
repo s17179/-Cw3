@@ -89,7 +89,8 @@ namespace WebApplication.Controllers
             using (var command = new SqlCommand())
             {
                 command.Connection = connection;
-                command.CommandText = "SELECT Student.IndexNumber, Student.FirstName, Student.LastName, Student.BirthDate, Enrollment.IdEnrollment, Enrollment.Semester, Enrollment.StartDate, Studies.IdStudy, Studies.Name FROM Student JOIN Enrollment ON Student.IdEnrollment = Enrollment.IdEnrollment JOIN Studies ON Enrollment.IdStudy = Studies.IdStudy WHERE Student.IndexNumber = " + studentId;
+                command.CommandText = "SELECT Student.IndexNumber, Student.FirstName, Student.LastName, Student.BirthDate, Enrollment.IdEnrollment, Enrollment.Semester, Enrollment.StartDate, Studies.IdStudy, Studies.Name FROM Student JOIN Enrollment ON Student.IdEnrollment = Enrollment.IdEnrollment JOIN Studies ON Enrollment.IdStudy = Studies.IdStudy WHERE Student.IndexNumber = @id";
+                command.Parameters.AddWithValue("id", studentId);
                 
                 connection.Open();
                 var reader = command.ExecuteReader();
