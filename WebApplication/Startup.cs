@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebApplication.DAL;
+using WebApplication.Services;
 
 namespace WebApplication
 {
@@ -27,6 +28,7 @@ namespace WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IDbService, MockDbService>();
+            services.AddSingleton<IStudentsDbService, SqlServerDbService>();
             services.AddControllers();
         }
 
