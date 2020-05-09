@@ -133,5 +133,53 @@ namespace WebApplication.Controllers
                 }
             }
         }
+
+        [HttpPost]
+        [Route("promotions")]
+        public IActionResult PromoteStudent(PromoteStudentRequest request)
+        {
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
+            using (var command = new SqlCommand())
+            {
+                command.Connection = connection;
+                connection.Open();
+                
+                // Powinniśmy upewnić się, że w tabeli Enrollment istnieje wpis o podanej wartości Studies i Semester.
+                // W przeciwnym razie zwracamy błąd 404 Not Found.
+                command.CommandText = "SELECT 1 FROM Enrollment JOIN Studies ON Enrollment.IdStudy = Studies.IdStudy WHERE Semester = @semester AND Studies.Name = @studiesName";
+                command.Parameters.AddWithValue("semester", request.Semester);
+                command.Parameters.AddWithValue("studiesName", request.Studies);
+
+                var reader = command.ExecuteReader();
+                command.Parameters.Clear();
+                if (!reader.HasRows)
+                {
+                    return NotFound();
+                }
+                reader.Close();
+                
+                command.CommandText = "EXEC PromoteStudents @Studies, @Semester";
+                command.Parameters.AddWithValue("Studies", request.Studies);
+                command.Parameters.AddWithValue("Semester", request.Semester);
+                command.ExecuteNonQuery();
+                command.Parameters.Clear();
+
+                // Na końcu zwracamy kod 201 wraz z zawartością reprezentującą nowy obiekt Enrollment
+                command.CommandText = "SELECT Enrollment.IdEnrollment, Enrollment.Semester, Enrollment.StartDate, Studies.IdStudy, Studies.Name FROM Enrollment JOIN Studies ON Enrollment.IdStudy = Studies.IdStudy WHERE Studies.Name = @studiesName AND Enrollment.Semester = @semester";
+                command.Parameters.AddWithValue("semester", request.Semester + 1);
+                command.Parameters.AddWithValue("studiesName", request.Studies);
+                reader = command.ExecuteReader();
+                command.Parameters.Clear();
+                reader.Read();
+                
+                var studentEnrollment = new StudentEnrollment();
+                studentEnrollment.IdEnrollment = (int) reader["IdEnrollment"];
+                studentEnrollment.Semester = (int) reader["Semester"];
+                studentEnrollment.StartDate = DateTime.Parse(reader["StartDate"].ToString());
+                studentEnrollment.Study = new Study{IdStudy = (int)reader["IdStudy"], Name = reader["Name"].ToString()};
+
+                return Created("", studentEnrollment);
+            }
+        }
     }
 }
