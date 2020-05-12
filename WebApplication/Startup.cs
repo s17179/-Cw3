@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ namespace WebApplication
         {
             services.AddSingleton<IDbService, MockDbService>();
             services.AddSingleton<IStudentsDbService, SqlServerDbService>();
+            services.AddSingleton<IAccessGuardService, SqlServerAccessGuardService>();
             services.AddControllers();
         }
 
@@ -45,6 +47,29 @@ namespace WebApplication
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            app.Use(async (context, next) =>
+            {
+                if (!context.Request.Headers.ContainsKey("Index"))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("Brak headera Index");
+                    return;
+                }
+
+                string index = context.Request.Headers["Index"].ToString();
+                
+                var service = (IAccessGuardService)app.ApplicationServices.GetService(typeof(IAccessGuardService));
+
+                if (!service.CanAccess(index))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync("Brak studenta o indexie: " + index);
+                    return;
+                }
+
+                await next();
+            });
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
