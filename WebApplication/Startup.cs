@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebApplication.DAL;
+using WebApplication.Midllewares;
 using WebApplication.Services;
 
 namespace WebApplication
@@ -47,6 +48,8 @@ namespace WebApplication
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<LoggingMiddleware>();
             
             app.Use(async (context, next) =>
             {

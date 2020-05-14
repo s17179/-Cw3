@@ -1,0 +1,17 @@
+Metoda: GET
+Ścieżka: /api/students
+Query string: ?test=123
+Body: 
+
+Metoda: GET
+Ścieżka: /api/students
+Query string: ?test=1235
+Body: 
+
+Metoda: GET
+Ścieżka: /api/students
+Query string: ?test=1235
+Body: {
+	"test": "testVal"
+}
+
