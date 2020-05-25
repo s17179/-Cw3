@@ -8,6 +8,49 @@ namespace WebApplication.Services
 {
     public class SqlServerDbService : IStudentsDbService
     {
+        public Student LoginByRefreshToken(string refreshToken)
+        {
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
+            using (var command = new SqlCommand())
+            {
+                command.Connection = connection;
+                connection.Open();
+                
+                command.CommandText = "SELECT IndexNumber, FirstName, LastName FROM Student WHERE RefreshToken = @RefreshToken";
+                command.Parameters.AddWithValue("RefreshToken", refreshToken);
+                
+                var reader = command.ExecuteReader();
+                if (!reader.Read())
+                {
+                    throw new Exception("User not found");
+                }
+                
+                return new Student
+                {
+                    
+                    IndexNumber = reader["IndexNumber"].ToString(),
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString()
+                };
+            }
+        }
+
+        public void SaveRefreshToken(string refreshToken, string indexNumber)
+        {
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
+            using (var command = new SqlCommand())
+            {
+                command.Connection = connection;
+                connection.Open();
+                
+                command.CommandText = "UPDATE Student SET RefreshToken = @RefreshToken WHERE IndexNumber = @IndexNumber";
+                command.Parameters.AddWithValue("IndexNumber", indexNumber);
+                command.Parameters.AddWithValue("RefreshToken", refreshToken);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
         public Student Login(LoginRequestDto request)
         {
             using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))

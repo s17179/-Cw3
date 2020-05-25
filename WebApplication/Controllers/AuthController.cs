@@ -48,10 +48,48 @@ namespace WebApplication.Controllers
                 signingCredentials: creds
             );
 
+            var refreshToken = Guid.NewGuid();
+            _studentsDbService.SaveRefreshToken(refreshToken.ToString(), request.Login);
+
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                refreshToken=Guid.NewGuid()
+                refreshToken = refreshToken
+            });
+        }
+
+        [HttpPost]
+        [Route("refresh")]
+        public IActionResult RefreshToken(RefreshTokenRequestDto request)
+        {
+            var student = _studentsDbService.LoginByRefreshToken(request.RefreshToken);
+            
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, student.IndexNumber),
+                new Claim(ClaimTypes.Name, student.FirstName + " " + student.LastName),
+                new Claim(ClaimTypes.Role, "employee")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken
+            (
+                issuer: "Gakko",
+                audience: "Students",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(10),
+                signingCredentials: creds
+            );
+
+            var refreshToken = Guid.NewGuid();
+            _studentsDbService.SaveRefreshToken(refreshToken.ToString(), student.IndexNumber);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken = refreshToken
             });
         }
     }

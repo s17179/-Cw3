@@ -8,5 +8,8 @@ namespace WebApplication.Services
         public StudentEnrollment EnrollStudent(StudentEnrollmentRequest request);
         public StudentEnrollment PromoteStudents(PromoteStudentRequest request);
         public Student Login(LoginRequestDto request);
+        public void SaveRefreshToken(string refreshToken, string indexNumber);
+
+        public Student LoginByRefreshToken(string refreshToken);
     }
 }
