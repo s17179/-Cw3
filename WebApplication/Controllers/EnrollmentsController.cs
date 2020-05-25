@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.DTOs;
@@ -22,6 +23,8 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [Authorize(Roles = "employee")]
         public IActionResult EnrollStudent(StudentEnrollmentRequest request)
         {
             // Końcówka powinna najpierw sprawdzić czy przekazane zostały wszystkie dane.
@@ -45,6 +48,7 @@ namespace WebApplication.Controllers
 
         [HttpPost]
         [Route("promotions")]
+        [Authorize(Roles = "employee")]
         public IActionResult PromoteStudent(PromoteStudentRequest request)
         {
             try

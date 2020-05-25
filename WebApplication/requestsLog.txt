@@ -15,3 +15,51 @@ Body: {
 	"test": "testVal"
 }
 
+Metoda: POST
+Ścieżka: /api/students
+Query string: 
+Body: {
+	"Login": "test",
+	"Haslo": "123"
+}
+
+Metoda: POST
+Ścieżka: /api/auth/login
+Query string: 
+Body: {
+	"Login": "test",
+	"Haslo": "tes"
+}
+
+Metoda: POST
+Ścieżka: /api/auth/login
+Query string: 
+Body: {
+	"Login": "test",
+	"Haslo": "tes"
+}
+
+Metoda: POST
+Ścieżka: /api/students
+Query string: 
+Body: {
+	"Login": "test",
+	"Haslo": "123"
+}
+
+Metoda: POST
+Ścieżka: /api/students
+Query string: 
+Body: {
+	"Login": "test",
+	"Haslo": "123"
+}
+
+Metoda: POST
+Ścieżka: /api/students
+Query string: 
+Body: {
+	"Login": "test",
+	"Haslo": "123"
+}
+

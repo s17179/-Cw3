@@ -8,6 +8,32 @@ namespace WebApplication.Services
 {
     public class SqlServerDbService : IStudentsDbService
     {
+        public Student Login(LoginRequestDto request)
+        {
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))
+            using (var command = new SqlCommand())
+            {
+                command.Connection = connection;
+                connection.Open();
+                
+                command.CommandText = "SELECT FirstName, LastName FROM Student WHERE IndexNumber = @IndexNumber AND Password = @Password";
+                command.Parameters.AddWithValue("IndexNumber", request.Login);
+                command.Parameters.AddWithValue("Password", request.Haslo);
+                
+                var reader = command.ExecuteReader();
+                if (!reader.Read())
+                {
+                    throw new Exception("User not found");
+                }
+                
+                return new Student
+                {
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString()
+                };
+            }
+        }
+        
         public StudentEnrollment EnrollStudent(StudentEnrollmentRequest request)
         {
             using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s17179;Integrated Security=True"))

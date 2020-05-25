@@ -25,3 +25,11 @@ C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtime
 C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\C# projects\cw3\WebApplication\WebApplication\obj\Debug\netcoreapp3.1\WebApplication.csproj.CopyComplete
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\C# projects\cw3\WebApplication\WebApplication\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll

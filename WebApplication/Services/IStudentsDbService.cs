@@ -7,5 +7,6 @@ namespace WebApplication.Services
     {
         public StudentEnrollment EnrollStudent(StudentEnrollmentRequest request);
         public StudentEnrollment PromoteStudents(PromoteStudentRequest request);
+        public Student Login(LoginRequestDto request);
     }
 }
