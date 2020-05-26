@@ -59,14 +59,21 @@ namespace WebApplication.Services
                 command.Connection = connection;
                 connection.Open();
                 
-                command.CommandText = "SELECT FirstName, LastName FROM Student WHERE IndexNumber = @IndexNumber AND Password = @Password";
+                command.CommandText = "SELECT FirstName, LastName, Password, Salt FROM Student WHERE IndexNumber = @IndexNumber";
                 command.Parameters.AddWithValue("IndexNumber", request.Login);
-                command.Parameters.AddWithValue("Password", request.Haslo);
-                
+
                 var reader = command.ExecuteReader();
                 if (!reader.Read())
                 {
                     throw new Exception("User not found");
+                }
+                
+                var password = request.Haslo;
+                var encryptedPassword = PasswordEncryptionService.HashPassword(password, reader["Salt"].ToString());
+
+                if (!encryptedPassword.Equals(reader["Password"].ToString()))
+                {
+                    throw new Exception("Password incorrect");
                 }
                 
                 return new Student
